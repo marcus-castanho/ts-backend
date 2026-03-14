@@ -1,7 +1,6 @@
 import z from 'zod';
 import { Controller } from '../types';
 import { ReqDataSchema } from '@/server/types';
-import { env } from '@/infra/env';
 import * as jose from 'jose';
 import { buildToken } from '@/domains/auth/services/buildToken';
 import {
@@ -25,9 +24,6 @@ export const postSignInGoogleOAuth: Controller = (route) => {
                 const { code } = req.body;
 
                 const authResponse = await postGoogleAuthToken({
-                    client_id: env.GOOGLE_CLIENT_ID,
-                    client_secret: env.GOOGLE_CLIENT_SECRET,
-                    redirect_uri: env.GOOGLE_REDIRECT_URI,
                     grant_type: 'authorization_code',
                     code: code,
                 });

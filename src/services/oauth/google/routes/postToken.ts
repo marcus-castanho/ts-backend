@@ -2,6 +2,7 @@ import z from 'zod';
 import { Fetch } from '@/infra/http';
 import { client } from '../client';
 import { validateResBody } from '@/infra/http/validations/validateResBody';
+import { CONFIG } from '../config';
 
 const resBodySchema = z.object({
     id_token: z.string(),
@@ -16,9 +17,6 @@ const resBodySchema = z.object({
 type ResBody = z.infer<typeof resBodySchema>;
 
 type Payload = {
-    client_id: string;
-    client_secret: string;
-    redirect_uri: string;
     grant_type: string;
     code: string;
 };
@@ -32,6 +30,9 @@ export const postToken: Fetch<ResBody, Payload> = async (payload) => {
             },
             body: new URLSearchParams({
                 ...payload,
+                client_id: CONFIG.client_id,
+                client_secret: CONFIG.client_secret,
+                redirect_uri: CONFIG.redirect_uri,
             }),
         },
     });
