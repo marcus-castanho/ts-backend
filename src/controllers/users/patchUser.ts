@@ -25,22 +25,12 @@ export const patchUser: Controller = (route) => {
                     security: [{ [DOCS.authType]: [] }],
                 },
             },
-            async (req, res) => {
+            async (req) => {
                 const { password, ...payload } = req.body;
                 const user = await userServices.updateUser({
                     id: req.params.id,
                     payload,
                 });
-
-                if (!user) return res.status(500).send();
-                if ('error' in user) {
-                    const { error } = user;
-                    if (error.code === ERROR.UNIQUE_CONSTRAINT)
-                        return res
-                            .status(400)
-                            .send({ message: 'Unique values already in use' });
-                    return res.status(500).send();
-                }
 
                 if (password) {
                     await authServices.updatedAuthCredentials({

@@ -1,7 +1,6 @@
 import { db } from '@/infra/db';
 import { biometricKeysTable } from '@/infra/db/schema/biometricKeys';
-import { log } from '@/infra/logger';
-import { catchError } from '@/infra/db/error';
+import { handleDBError } from '@/infra/db/error';
 import * as crypto from 'crypto';
 
 type EnrollBiometricArgs = {
@@ -19,7 +18,6 @@ export async function enrollBiometric({
     publicKey,
     deviceInfo,
 }: EnrollBiometricArgs) {
-    // Generate a random challenge for signature verification
     const challenge = crypto.randomBytes(32).toString('base64');
 
     const result = await db
@@ -42,13 +40,9 @@ export async function enrollBiometric({
         .returning()
         .catch((error) => ({ error }));
 
-    if ('error' in result) return catchError(result.error);
+    if ('error' in result) throw handleDBError(result.error);
 
     const [record] = result;
-    if (!record) {
-        log.error('Failed to enroll biometric - no record returned');
-        return { error: { code: '-1', message: 'Enrollment failed' } };
-    }
 
-    return { success: true, record };
+    return record!;
 }

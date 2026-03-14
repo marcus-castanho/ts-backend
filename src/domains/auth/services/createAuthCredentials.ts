@@ -1,7 +1,7 @@
 import { db } from '@/infra/db';
 import { authTable } from '@/infra/db/schema/auth';
 import { hashString } from './hashString';
-import { catchError } from '@/infra/db/error';
+import { handleDBError } from '@/infra/db/error';
 
 type CreateAuthCredentialsArgs = {
     userId: number;
@@ -20,5 +20,5 @@ export async function createAuthCredentials({
         .values({ userId, credentials: { email, password: hash, salt } })
         .catch((error) => ({ error }));
 
-    if (result && 'error' in result) return catchError(result.error);
+    if (result && 'error' in result) throw handleDBError(result.error);
 }

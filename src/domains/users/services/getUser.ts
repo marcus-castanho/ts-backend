@@ -1,22 +1,23 @@
 import { db, usersTable } from '@/infra/db';
 import { eq } from 'drizzle-orm';
 import { userSchema } from '../entity';
-import { log } from '@/infra/logger';
+import { validateSchema } from '@/infra/db/validations/validateSchema';
+import { handleDBError } from '@/infra/db/error';
 
 type GetUserArgs = { id: number };
 export async function getUser({ id }: GetUserArgs) {
-    const [user] = await db
+    const result = await db
         .select()
         .from(usersTable)
-        .where(eq(usersTable.id, id));
+        .where(eq(usersTable.id, id))
+        .catch((error) => ({ error }));
 
+    if ('error' in result) throw handleDBError(result.error);
+
+    const [user] = result;
     if (!user) return null;
 
-    const parsedUser = userSchema.safeParse(user);
-    if (parsedUser.error) {
-        log.error(`Users schema inconsistency. Error: ${parsedUser.error}`);
-        return { error: { code: '-1', message: 'Schema inconsistency' } };
-    }
+    const parsedUser = await validateSchema('User', user, userSchema);
 
-    return parsedUser.data;
+    return parsedUser;
 }

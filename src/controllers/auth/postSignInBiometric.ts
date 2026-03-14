@@ -29,10 +29,6 @@ export const postSignInBiometric: Controller = (route) => {
 
                 if (!result)
                     return res.status(404).send({ error: 'User not found' });
-                if ('error' in result)
-                    return res
-                        .status(500)
-                        .send({ error: result.error.message });
 
                 const userId = result.users.id;
 
@@ -42,15 +38,6 @@ export const postSignInBiometric: Controller = (route) => {
                         userId,
                         signature: req.body.biometricSignature,
                     });
-
-                if (
-                    'error' in verificationResult &&
-                    typeof verificationResult.error === 'object'
-                ) {
-                    return res.status(500).send({
-                        error: verificationResult.error.message,
-                    });
-                }
 
                 if (!verificationResult.success) {
                     return res.status(401).send({

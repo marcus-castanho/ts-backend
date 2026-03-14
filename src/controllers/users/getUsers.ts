@@ -19,12 +19,10 @@ export const getUsers: Controller = (route) => {
                     security: [{ [DOCS.authType]: [] }],
                 },
             },
-            async (req, res) => {
+            async (req) => {
                 const users = await userServices.getUsers({
                     filter: { ...req.query },
                 });
-
-                if ('error' in users) return res.status(500).send();
 
                 return { users };
             },

@@ -1,11 +1,11 @@
 import { db, usersTable } from '@/infra/db';
 import { eq, or } from 'drizzle-orm';
 import { userSchema } from '../entity';
-import { log } from '@/infra/logger';
 import { authTable } from '@/infra/db/schema/auth';
 import { authSchema } from '@/domains/auth';
 import z from 'zod';
-import { catchError } from '@/infra/db/error';
+import { handleDBError } from '@/infra/db/error';
+import { validateSchema } from '@/infra/db/validations/validateSchema';
 
 type GetUserWithAuthArgs = { identifier: { id: number } | { email: string } };
 export async function getUserWithAuth({ identifier }: GetUserWithAuthArgs) {
@@ -25,21 +25,16 @@ export async function getUserWithAuth({ identifier }: GetUserWithAuthArgs) {
         .leftJoin(authTable, eq(usersTable.id, authTable.userId))
         .catch((error) => ({ error }));
 
-    if ('error' in result) return catchError(result.error);
+    if ('error' in result) throw handleDBError(result.error);
 
     const [record] = result;
     if (!record) return null;
 
-    const parsedResult = z
-        .object({ users: userSchema, auth: authSchema.nullable() })
-        .safeParse(record);
+    const parsedResult = await validateSchema(
+        'User',
+        record,
+        z.object({ users: userSchema, auth: authSchema.nullable() }),
+    );
 
-    if (parsedResult.error) {
-        log.error(
-            `Users or auth schema inconsistency. Error: ${parsedResult.error}`,
-        );
-        return { error: { code: '-1', message: 'Schema inconsistency' } };
-    }
-
-    return parsedResult.data;
+    return parsedResult;
 }

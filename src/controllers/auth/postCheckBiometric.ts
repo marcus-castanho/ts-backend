@@ -24,10 +24,6 @@ export const postCheckBiometric: Controller = (route) => {
 
                 if (!result)
                     return res.status(404).send({ error: 'User not found' });
-                if ('error' in result)
-                    return res
-                        .status(500)
-                        .send({ error: result.error.message });
 
                 const userId = result.users.id;
 
@@ -35,12 +31,6 @@ export const postCheckBiometric: Controller = (route) => {
                 const biometricResult = await authServices.getBiometricStatus({
                     userId,
                 });
-
-                if ('error' in biometricResult) {
-                    return res
-                        .status(500)
-                        .send({ error: biometricResult.error.message });
-                }
 
                 return res.send({
                     enrolled: biometricResult.enrolled,

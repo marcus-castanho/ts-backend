@@ -1,7 +1,7 @@
 import { db } from '@/infra/db';
 import { biometricKeysTable } from '@/infra/db/schema/biometricKeys';
 import { eq } from 'drizzle-orm';
-import { catchError } from '@/infra/db/error';
+import { handleDBError } from '@/infra/db/error';
 
 type VerifyBiometricSignatureArgs = {
     userId: number;
@@ -17,8 +17,7 @@ export async function verifyBiometricSignature({
         .from(biometricKeysTable)
         .where(eq(biometricKeysTable.userId, userId))
         .catch((error) => ({ error }));
-
-    if ('error' in result) return catchError(result.error);
+    if ('error' in result) throw handleDBError(result.error);
 
     const [record] = result;
     if (!record) {
@@ -33,10 +32,12 @@ export async function verifyBiometricSignature({
     }
 
     // Update last used timestamp
-    await db
+    const updateResult = await db
         .update(biometricKeysTable)
         .set({ lastUsedAt: new Date() })
-        .where(eq(biometricKeysTable.userId, userId));
+        .where(eq(biometricKeysTable.userId, userId))
+        .catch((error) => ({ error }));
+    if ('error' in updateResult) throw handleDBError(updateResult.error);
 
     return { success: true };
 }

@@ -23,7 +23,6 @@ export const getUser: Controller = (route) => {
                 const user = await userServices.getUser({ id: req.params.id });
 
                 if (!user) return res.status(404).send();
-                if ('error' in user) return res.status(500).send();
 
                 return user;
             },

@@ -18,12 +18,6 @@ export const getBiometricStatus: Controller = (route) => {
                     userId,
                 });
 
-                if ('error' in result) {
-                    return res
-                        .status(500)
-                        .send({ error: result.error.message });
-                }
-
                 return res.send(result);
             },
         );

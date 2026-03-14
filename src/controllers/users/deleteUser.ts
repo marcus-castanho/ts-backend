@@ -24,7 +24,6 @@ export const deleteUser: Controller = (route) => {
                     id: req.params.id,
                 });
 
-                if (user?.error) return res.status(500).send();
                 if (user === null) return res.status(404).send();
 
                 return;

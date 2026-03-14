@@ -8,6 +8,7 @@ import fastifySwagger from '@fastify/swagger';
 import { jsonSchemaTransform } from 'fastify-type-provider-zod';
 import fastifySwaggerUi from '@fastify/swagger-ui';
 import { DOCS_CONFIG, DOCS } from './docs';
+import { handleError } from './error';
 
 export const createInstance = async () => {
     const server = await Fastify()
@@ -23,6 +24,10 @@ export const createInstance = async () => {
             dev: env.NODE_ENV === 'development',
             spa: true,
         })
+        .setErrorHandler(handleError)
+        /**
+         * Zod req data validator provider must be the last one defined to ensure schema typing.
+         */
         .withTypeProvider<ZodTypeProvider>();
 
     return server;

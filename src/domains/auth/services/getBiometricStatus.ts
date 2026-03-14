@@ -1,7 +1,7 @@
 import { db } from '@/infra/db';
 import { biometricKeysTable } from '@/infra/db/schema/biometricKeys';
 import { eq } from 'drizzle-orm';
-import { catchError } from '@/infra/db/error';
+import { handleDBError } from '@/infra/db/error';
 
 type GetBiometricStatusArgs = {
     userId: number;
@@ -18,7 +18,7 @@ export async function getBiometricStatus({ userId }: GetBiometricStatusArgs) {
         .where(eq(biometricKeysTable.userId, userId))
         .catch((error) => ({ error }));
 
-    if ('error' in result) return catchError(result.error);
+    if ('error' in result) throw handleDBError(result.error);
 
     const [record] = result;
 

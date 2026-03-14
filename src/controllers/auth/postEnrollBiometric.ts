@@ -30,24 +30,17 @@ export const postEnrollBiometric: Controller = (route) => {
             async (req, res) => {
                 const authenticatedUserId = req['userId'];
 
-                // Ensure user can only enroll their own biometrics
                 if (authenticatedUserId !== req.body.userId) {
                     return res.status(403).send({
                         error: 'You can only enroll your own biometric data',
                     });
                 }
 
-                const result = await authServices.enrollBiometric({
+                await authServices.enrollBiometric({
                     userId: req.body.userId,
                     publicKey: req.body.publicKey,
                     deviceInfo: req.body.deviceInfo,
                 });
-
-                if ('error' in result) {
-                    return res
-                        .status(500)
-                        .send({ error: result.error.message });
-                }
 
                 return res.send({ enrolled: true });
             },
