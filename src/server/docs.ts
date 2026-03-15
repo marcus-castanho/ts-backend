@@ -3,10 +3,12 @@ import { FastifyDynamicSwaggerOptions } from '@fastify/swagger';
 type SwaggerOptions = FastifyDynamicSwaggerOptions['openapi'];
 
 const AUTH_TYPE = 'bearerAuth';
+const ADMIN_AUTH_TYPE = 'apiKey';
 
 export const DOCS = {
     route: '/docs',
     authType: AUTH_TYPE,
+    adminAuthType: ADMIN_AUTH_TYPE,
     security: [{ [AUTH_TYPE]: [] }],
     tags: {
         users: 'users',
@@ -24,6 +26,11 @@ export const DOCS_CONFIG: Partial<SwaggerOptions> = {
     components: {
         securitySchemes: {
             [DOCS.authType]: { type: 'http', scheme: 'bearer' },
+            apiKey: {
+                type: ADMIN_AUTH_TYPE,
+                name: 'api-key',
+                in: 'header',
+            },
         },
         schemas: {
             cookies: {

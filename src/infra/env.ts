@@ -17,6 +17,9 @@ const envSchema = z.object({
     GOOGLE_AUTH_URL: z.string(),
     GOOGLE_REDIRECT_URI: z.string(),
     GOOGLE_AUTH_ACCOUNT_URL: z.string(),
+    REDIS_HOST: z.string(),
+    REDIS_USERNAME: z.string(),
+    REDIS_PASSWORD: z.string(),
 });
 
 const envValidation = envSchema.safeParse(process.env);

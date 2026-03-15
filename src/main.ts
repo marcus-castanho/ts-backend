@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { log } from '@/infra/logger';
 import { runApp } from './app';
 import { db } from './infra/db/client';
+import { client as cacheClient } from './infra/cache/client';
 
 (function bootstrap() {
     runApp()
@@ -16,11 +17,13 @@ import { db } from './infra/db/client';
 process.on('SIGTERM', () => {
     log.info('SIGTERM signal received.');
     db.$client.end();
+    cacheClient.close();
     process.exit(1);
 });
 
 process.on('SIGINT', () => {
     log.info('SIGTERM signal received.');
     db.$client.end();
+    cacheClient.close();
     process.exit(1);
 });

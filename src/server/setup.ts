@@ -12,6 +12,7 @@ import { setupAuthRoutes } from './routes/auth';
 import { env } from '@/infra/env';
 import { logDebugRequest } from './lib/logDebugRequest';
 import { logDebugResponse } from './lib/logDebugResponse';
+import { setupExamplesRoutes } from './routes/examples';
 
 export async function startServer() {
     const server = await createInstance();
@@ -57,6 +58,7 @@ function setupRoutes(instance: Server) {
 
     setupUsersRoutes(instance);
     setupAuthRoutes(instance);
+    setupExamplesRoutes(instance);
 }
 
 async function setupClient(instance: Server) {
