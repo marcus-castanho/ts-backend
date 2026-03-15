@@ -5,3 +5,6 @@ build
 
 # Environment
 .env
+
+# Tasklist
+TODOs.md
