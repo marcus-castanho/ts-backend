@@ -1,7 +1,7 @@
 import z from 'zod';
-import { Fetch } from '@/infra/http';
+import { Fetch } from '@/lib/http';
 import { client } from '../client';
-import { validateResBody } from '@/infra/http/validations/validateResBody';
+import { validateResBody } from '@/lib/http/validations/validateResBody';
 import { CONFIG } from '../config';
 
 const resBodySchema = z.object({
