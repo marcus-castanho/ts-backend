@@ -4,7 +4,6 @@ import {
     SchemaInconsistencyError,
     UniqueConstraintConflictError,
 } from '@/infra/db/error';
-import { log } from '@/infra/logger';
 
 type ErrorHandlerFn = Parameters<FastifyInstance['setErrorHandler']>[0];
 
@@ -26,11 +25,5 @@ export const handleError: ErrorHandlerFn = (error, req, res) => {
         }
     }
 
-    //@ts-expect-error - error ype unknown
-    log.error(`Unexpected error. Error: ${error?.message} `);
-    return res.status(500).send({
-        statusCode: 500,
-        error: 'Internal Server Error',
-        message: 'Internal Server Error',
-    });
+    throw error;
 };

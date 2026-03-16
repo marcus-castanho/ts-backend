@@ -5,8 +5,13 @@ import z from 'zod';
 import { handleDBError } from '@/infra/db/error';
 import { validateSchema } from '@/infra/db/validations/validateSchema';
 
-type GetUsersArgs = { filter: { name?: string; email?: string } };
-export async function getUsers({ filter }: GetUsersArgs) {
+type GetUsersArgs = {
+    filter: { name?: string; email?: string };
+    pagination: { page: number; limit: number };
+};
+export async function getUsers({ filter, pagination }: GetUsersArgs) {
+    const { page, limit } = pagination;
+
     const result = await db
         .select()
         .from(usersTable)
@@ -20,6 +25,8 @@ export async function getUsers({ filter }: GetUsersArgs) {
                     : undefined,
             ),
         )
+        .limit(limit)
+        .offset((page - 1) * limit)
         .catch((error) => ({ error }));
 
     if ('error' in result) throw handleDBError(result.error);

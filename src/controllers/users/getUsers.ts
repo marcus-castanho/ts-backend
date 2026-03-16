@@ -5,7 +5,13 @@ import z from 'zod';
 import { DOCS } from '@/server/docs';
 
 const dto = {
-    querystring: z.object({ name: z.string(), email: z.string() }).partial(),
+    querystring: z
+        .object({ name: z.string(), email: z.string() })
+        .partial()
+        .extend({
+            page: z.coerce.number().positive(),
+            limit: z.coerce.number().positive(),
+        }),
 } satisfies ReqDataSchema;
 
 export const getUsers: Controller = (route) => {
@@ -20,8 +26,10 @@ export const getUsers: Controller = (route) => {
                 },
             },
             async (req) => {
+                const { page, limit, ...query } = req.query;
                 const users = await userServices.getUsers({
-                    filter: { ...req.query },
+                    filter: { ...query },
+                    pagination: { page, limit },
                 });
 
                 return { users };

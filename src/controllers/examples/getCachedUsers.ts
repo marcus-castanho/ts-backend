@@ -1,17 +1,18 @@
-import { userSchema, userServices } from '@/domains/users';
+import { userServices } from '@/domains/users';
 import { Controller } from '../types';
 import { ReqDataSchema } from '@/server/types';
 import z from 'zod';
 import { DOCS } from '@/server/docs';
-import { client } from '@/infra/cache/client';
-import { jsonSafeParse } from '@/lib/jsonSafeParse';
-import { jsonSafeStringify } from '@/lib/jsonSafeStringify';
-
-const CACHE_KEY = 'users';
-const CACHE_TIME = 60;
+import { generateQueryHashKey } from '@/infra/cache/utils/generateQueryHashKey';
 
 const dto = {
-    querystring: z.object({ name: z.string(), email: z.string() }).partial(),
+    querystring: z
+        .object({ name: z.string(), email: z.string() })
+        .partial()
+        .extend({
+            page: z.coerce.number().positive(),
+            limit: z.coerce.number().positive(),
+        }),
 } satisfies ReqDataSchema;
 
 export const getCachedUsers: Controller = (route) => {
@@ -26,21 +27,16 @@ export const getCachedUsers: Controller = (route) => {
                 },
             },
             async (req) => {
-                const cached = await client.get(CACHE_KEY);
-                const parsedCached = z
-                    .array(userSchema)
-                    .safeParse(jsonSafeParse(cached));
-
-                if (parsedCached.success) return { users: parsedCached.data };
-
-                const users = await userServices.getUsers({
-                    filter: { ...req.query },
+                const { page, limit, ...filter } = req.query;
+                const queryKey = generateQueryHashKey({
+                    ...req.query,
+                    url: req.url,
                 });
-                await client.setEx(
-                    CACHE_KEY,
-                    CACHE_TIME,
-                    jsonSafeStringify(users),
-                );
+                const users = await userServices.getCachedUsers({
+                    queryKey,
+                    filter,
+                    pagination: { page, limit },
+                });
 
                 return { users };
             },
