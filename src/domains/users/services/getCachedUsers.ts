@@ -1,9 +1,8 @@
 import { userSchema } from '../entity';
 import z from 'zod';
 import { client } from '@/infra/cache/client';
-import { jsonSafeParse } from '@/lib/jsonSafeParse';
 import { getUsers } from './getUsers';
-import { jsonSafeStringify } from '@/lib/jsonSafeStringify';
+import { KEYSPACE } from '@/infra/cache/consts';
 
 const CACHE_TIME = 60;
 
@@ -18,21 +17,19 @@ export async function getCachedUsers({
     pagination,
 }: GetCachedUsersArgs) {
     const { page, limit } = pagination;
+    const key = `${KEYSPACE['query:users']}:${queryKey}`;
 
-    const cached = await client.get(queryKey);
-    const parsedCached = z.array(userSchema).safeParse(jsonSafeParse(cached));
+    const cached = await client.json.get(key);
+    const parsedCached = z.array(userSchema).safeParse(cached);
 
-    if (parsedCached.success) return { users: parsedCached.data };
+    if (parsedCached.success) return parsedCached.data;
 
     const users = await getUsers({
         filter,
         pagination: { page, limit },
     });
-    await client.set(queryKey, jsonSafeStringify(users), {
-        expiration: {
-            type: 'EX',
-            value: CACHE_TIME,
-        },
+    await client.json.set(key, '$', users).then(() => {
+        return client.expire(key, CACHE_TIME);
     });
 
     return users;
