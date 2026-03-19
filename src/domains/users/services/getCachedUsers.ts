@@ -3,8 +3,9 @@ import z from 'zod';
 import { client } from '@/infra/cache/client';
 import { getUsers } from './getUsers';
 import { KEYSPACE } from '@/infra/cache/consts';
+import { generateJitterTTL } from '@/infra/cache/utils/generateJitterTtl';
 
-const CACHE_TIME = 60;
+const BASE_CACHE_TIME = 60;
 
 type GetCachedUsersArgs = {
     queryKey: string;
@@ -18,6 +19,10 @@ export async function getCachedUsers({
 }: GetCachedUsersArgs) {
     const { page, limit } = pagination;
     const key = `${KEYSPACE['query:users']}:${queryKey}`;
+    /**
+     * DOCS - CACHING: jitter ttl strategy to avoid multiple invalidations occuring at the same time
+     */
+    const ttl = generateJitterTTL(BASE_CACHE_TIME);
 
     const cached = await client.json.get(key);
     const parsedCached = z.array(userSchema).safeParse(cached);
@@ -29,7 +34,7 @@ export async function getCachedUsers({
         pagination: { page, limit },
     });
     await client.json.set(key, '$', users).then(() => {
-        return client.expire(key, CACHE_TIME);
+        return client.expire(key, ttl);
     });
 
     return users;
