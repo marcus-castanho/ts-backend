@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { verifyToken } from './services/verifyToken';
+import { checkIsSimpleUserRoute } from '@/server/lib/checkIsSimpleUserRoute';
 
 export async function protectRoute(req: FastifyRequest, res: FastifyReply) {
     const { authorization, ['platform']: platform } = req.headers;
@@ -26,8 +27,11 @@ export async function protectRoute(req: FastifyRequest, res: FastifyReply) {
 export async function verifyPermission(req: FastifyRequest, res: FastifyReply) {
     const isAdmin = !!req['isAdmin'];
     const userId = req['userId'];
+
+    const isUserRoute = checkIsSimpleUserRoute(req.url);
     //@ts-expect-error - req.params type unknown
-    const isDataOwner = req.params['userId'] === userId;
+    const userIdParam = isUserRoute ? req.params['id'] : req.params['userId'];
+    const isDataOwner = userIdParam === userId;
 
     if (!isAdmin && !isDataOwner) {
         res.status(403).send();

@@ -13,6 +13,7 @@ import { env } from '@/infra/env';
 import { logDebugRequest } from './lib/logDebugRequest';
 import { logDebugResponse } from './lib/logDebugResponse';
 import { setupExamplesRoutes } from './routes/examples';
+import { setupProducts_1Routes } from './routes/products_1';
 
 export async function startServer() {
     const server = await createInstance();
@@ -56,7 +57,7 @@ function setupLogs(instance: Server) {
 function setupRoutes(instance: Server) {
     instance.get('/', (_, res) => res.send({ message: 'Server is running' }));
 
-    setupUsersRoutes(instance);
+    setupUsersRoutes(instance, [setupProducts_1Routes]);
     setupAuthRoutes(instance);
     setupExamplesRoutes(instance);
 }

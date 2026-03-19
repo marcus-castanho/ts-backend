@@ -6,7 +6,7 @@ import { authServices } from '@/domains/auth';
 import { DOCS } from '@/server/docs';
 
 const dto = {
-    params: z.object({ userId: z.coerce.number() }),
+    params: z.object({ id: z.coerce.number() }),
     body: userSchema
         .pick({ email: true, name: true })
         .extend({ password: z.string() })
@@ -27,7 +27,7 @@ export const patchUser: Controller = (route) => {
             async (req) => {
                 const { password, ...payload } = req.body;
                 const user = await userServices.updateUser({
-                    id: req.params.userId,
+                    id: req.params.id,
                     payload,
                 });
 

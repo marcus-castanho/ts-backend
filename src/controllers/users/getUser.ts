@@ -5,7 +5,7 @@ import { userServices } from '@/domains/users';
 import { DOCS } from '@/server/docs';
 
 const dto = {
-    params: z.object({ userId: z.coerce.number() }),
+    params: z.object({ id: z.coerce.number() }),
 } satisfies ReqDataSchema;
 
 export const getUser: Controller = (route) => {
@@ -21,7 +21,7 @@ export const getUser: Controller = (route) => {
             },
             async (req, res) => {
                 const user = await userServices.getUser({
-                    id: req.params.userId,
+                    id: req.params.id,
                 });
 
                 if (!user) return res.status(404).send();

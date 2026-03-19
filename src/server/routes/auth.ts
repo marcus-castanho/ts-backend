@@ -1,5 +1,5 @@
 import { protectRoute, verifyIsAdmin } from '@/domains/auth/guard';
-import { Server } from '../types';
+import { InstanceHandler } from '../types';
 import {
     getAuthorize,
     getCallback,
@@ -18,7 +18,7 @@ import {
 
 const PREFIX = '/auth';
 
-export function setupAuthRoutes(instance: Server) {
+export const setupAuthRoutes: InstanceHandler = (instance) => {
     instance.register(
         (instanceWithPrefix) => {
             instanceWithPrefix.register(getAuthorize(`/authorize`));
@@ -53,4 +53,6 @@ export function setupAuthRoutes(instance: Server) {
         },
         { prefix: PREFIX },
     );
-}
+
+    return instance;
+};

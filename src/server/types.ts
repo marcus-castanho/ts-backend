@@ -6,3 +6,7 @@ export type ReqDataSchema = Pick<
     FastifySchema,
     'params' | 'querystring' | 'body'
 >;
+export type InstanceHandler = (
+    instance: Server,
+    subRouteHandlers?: InstanceHandler[],
+) => Server;

@@ -1,5 +1,5 @@
 import { protectRoute, verifyPermission } from '@/domains/auth/guard';
-import { Server } from '../../types';
+import { InstanceHandler } from '../types';
 import {
     postUsers,
     getUsers,
@@ -7,11 +7,13 @@ import {
     patchUser,
     deleteUser,
 } from '@/controllers/users';
-import { setupProducts_1Routes } from './products_1';
 
 const PREFIX = '/users';
 
-export function setupUsersRoutes(instance: Server) {
+export const setupUsersRoutes: InstanceHandler = (
+    instance,
+    subRoutesRegisters = [],
+) => {
     instance.register(
         (instanceWithPrefix) => {
             instanceWithPrefix.register(postUsers('/'));
@@ -24,18 +26,22 @@ export function setupUsersRoutes(instance: Server) {
                 );
 
                 instanceWitAuthPermission.register(getUsers('/'));
-                instanceWitAuthPermission.register(getUser(`/:userId`));
-                instanceWitAuthPermission.register(patchUser(`/:userId`));
-                instanceWitAuthPermission.register(deleteUser(`/:userId`));
+                instanceWitAuthPermission.register(getUser(`/:id`));
+                instanceWitAuthPermission.register(patchUser(`/:id`));
+                instanceWitAuthPermission.register(deleteUser(`/:id`));
 
-                instanceWitAuthPermission.register(
-                    (instanceWithIdParamPrefix) => {
-                        setupProducts_1Routes(instanceWithIdParamPrefix);
-                    },
-                    { prefix: '/:userId' },
-                );
+                subRoutesRegisters.map((handler) => {
+                    instanceWitAuthPermission.register(
+                        (instanceWithIdParamPrefix) => {
+                            handler(instanceWithIdParamPrefix);
+                        },
+                        { prefix: '/:userId' },
+                    );
+                });
             });
         },
         { prefix: PREFIX },
     );
-}
+
+    return instance;
+};

@@ -1,5 +1,5 @@
 import { protectRoute, verifyPermission } from '@/domains/auth/guard';
-import { Server } from '../types';
+import { InstanceHandler } from '../types';
 import {
     getCachedAllUserProducts,
     getCachedUsers,
@@ -7,7 +7,7 @@ import {
 
 const PREFIX = '/examples';
 
-export function setupExamplesRoutes(instance: Server) {
+export const setupExamplesRoutes: InstanceHandler = (instance) => {
     instance.register(
         (instanceWithPrefix) => {
             instanceWithPrefix.register((instanceWitAuthPermission) => {
@@ -41,4 +41,6 @@ export function setupExamplesRoutes(instance: Server) {
         },
         { prefix: PREFIX },
     );
-}
+
+    return instance;
+};
