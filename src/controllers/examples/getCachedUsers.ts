@@ -22,7 +22,7 @@ export const getCachedUsers: Controller = (route) => {
             {
                 schema: {
                     ...dto,
-                    tags: [DOCS.tags.users],
+                    tags: [DOCS.tags.examples],
                     security: [{ [DOCS.authType]: [] }],
                 },
             },

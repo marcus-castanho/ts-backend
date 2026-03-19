@@ -1,6 +1,9 @@
 import { protectRoute, verifyPermission } from '@/domains/auth/guard';
 import { Server } from '../types';
-import { getCachedUsers } from '@/controllers/examples';
+import {
+    getCachedAllUserProducts,
+    getCachedUsers,
+} from '@/controllers/examples';
 
 const PREFIX = '/examples';
 
@@ -20,6 +23,11 @@ export function setupExamplesRoutes(instance: Server) {
 
                 instanceWitAuthPermission.register(
                     getCachedUsers('/cached/users'),
+                );
+                instanceWitAuthPermission.register(
+                    getCachedAllUserProducts(
+                        '/cached/users/:userId/products_1',
+                    ),
                 );
             });
         },

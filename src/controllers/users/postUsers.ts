@@ -1,7 +1,7 @@
 import { ReqDataSchema } from '@/server/types';
 import { Controller } from '../types';
 import z from 'zod';
-import { USER_MOCK, userServices } from '@/domains/users';
+import { userServices } from '@/domains/users';
 import { authServices } from '@/domains/auth';
 import { DOCS } from '@/server/docs';
 
@@ -22,7 +22,6 @@ export const postUsers: Controller = (route) => {
             },
             async (req) => {
                 const user = await userServices.createUser({
-                    ...USER_MOCK,
                     payload: req.body,
                 });
 

@@ -1,32 +1,30 @@
-import z from 'zod';
 import { Controller } from '../types';
 import { ReqDataSchema } from '@/server/types';
-import { userServices } from '@/domains/users';
+import z from 'zod';
 import { DOCS } from '@/server/docs';
+import { products_1Services } from '@/domains/products_1/services';
 
 const dto = {
     params: z.object({ userId: z.coerce.number() }),
 } satisfies ReqDataSchema;
 
-export const deleteUser: Controller = (route) => {
+export const getCachedAllUserProducts: Controller = (route) => {
     return (instance) => {
-        instance.delete(
+        instance.get(
             route,
             {
                 schema: {
                     ...dto,
-                    tags: [DOCS.tags.users],
+                    tags: [DOCS.tags.examples],
                     security: [{ [DOCS.authType]: [] }],
                 },
             },
-            async (req, res) => {
-                const user = await userServices.deleteUser({
-                    id: req.params.userId,
+            async (req) => {
+                const data = await products_1Services.getAllCached({
+                    filter: { ...req.params },
                 });
 
-                if (user === null) return res.status(404).send();
-
-                return;
+                return { products: data };
             },
         );
     };

@@ -1,32 +1,32 @@
 import z from 'zod';
 import { Controller } from '../types';
 import { ReqDataSchema } from '@/server/types';
-import { userServices } from '@/domains/users';
 import { DOCS } from '@/server/docs';
+import { products_1Services } from '@/domains/products_1/services';
 
 const dto = {
-    params: z.object({ userId: z.coerce.number() }),
+    params: z.object({ id: z.coerce.number() }),
 } satisfies ReqDataSchema;
 
-export const deleteUser: Controller = (route) => {
+export const getProduct_1: Controller = (route) => {
     return (instance) => {
-        instance.delete(
+        instance.get(
             route,
             {
                 schema: {
                     ...dto,
-                    tags: [DOCS.tags.users],
+                    tags: [DOCS.tags.products_1],
                     security: [{ [DOCS.authType]: [] }],
                 },
             },
             async (req, res) => {
-                const user = await userServices.deleteUser({
-                    id: req.params.userId,
+                const data = await products_1Services.get({
+                    id: req.params.id,
                 });
 
-                if (user === null) return res.status(404).send();
+                if (!data) return res.status(404).send();
 
-                return;
+                return data;
             },
         );
     };

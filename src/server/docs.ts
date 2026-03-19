@@ -13,6 +13,8 @@ export const DOCS = {
     tags: {
         users: 'users',
         auth: 'auth',
+        products_1: 'products_1',
+        examples: 'examples',
     },
 };
 

@@ -27,7 +27,7 @@ export async function verifyPermission(req: FastifyRequest, res: FastifyReply) {
     const isAdmin = !!req['isAdmin'];
     const userId = req['userId'];
     //@ts-expect-error - req.params type unknown
-    const isDataOwner = req.params['id'] === userId;
+    const isDataOwner = req.params['userId'] === userId;
 
     if (!isAdmin && !isDataOwner) {
         res.status(403).send();
