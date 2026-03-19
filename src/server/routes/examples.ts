@@ -21,9 +21,17 @@ export function setupExamplesRoutes(instance: Server) {
                     return { ok: true };
                 });
 
+                /**
+                 * DOCS - req with simple cache-aside
+                 */
                 instanceWitAuthPermission.register(
                     getCachedUsers('/cached/users'),
                 );
+                /**
+                 * DOCS - req with hybrid caching strategy: write-through and cache-aside
+                 * - The routes POST /products_1, PATCH /products_1/:id and DELETE /products_1/:id update both primary DB and cache data for all products associated with a user
+                 * - This route queries all products associated with a user and implements cache-aside to also update cache data when there is none
+                 */
                 instanceWitAuthPermission.register(
                     getCachedAllUserProducts(
                         '/cached/users/:userId/products_1',
