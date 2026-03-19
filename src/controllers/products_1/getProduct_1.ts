@@ -5,7 +5,7 @@ import { DOCS } from '@/server/docs';
 import { products_1Services } from '@/domains/products_1/services';
 
 const dto = {
-    params: z.object({ id: z.coerce.number() }),
+    params: z.object({ userId: z.coerce.number(), id: z.coerce.number() }),
 } satisfies ReqDataSchema;
 
 export const getProduct_1: Controller = (route) => {
