@@ -3,6 +3,7 @@ import { User, userSchema } from '../entity';
 import { handleDBError } from '@/infra/db/error';
 import { eq } from 'drizzle-orm';
 import { validateSchema } from '@/infra/db/validations/validateSchema';
+import { SCHEMA_NAME } from '../consts';
 
 type UpdateUserArgs = {
     id: User['id'];
@@ -17,7 +18,9 @@ export async function updateUser({ id, payload }: UpdateUserArgs) {
         .catch((error) => ({ error }));
 
     if ('error' in result) throw handleDBError(result.error);
-    const parsedUser = await validateSchema('User', result[0], userSchema);
+
+    if (result.length === 0) return null;
+    const parsedUser = await validateSchema(SCHEMA_NAME, result[0], userSchema);
 
     return parsedUser;
 }

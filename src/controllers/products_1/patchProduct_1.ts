@@ -21,12 +21,14 @@ export const patchProduct_1: Controller = (route) => {
                     security: [{ [DOCS.authType]: [] }],
                 },
             },
-            async (req) => {
+            async (req, res) => {
                 const { ...payload } = req.body;
                 const data = await products_1Services.update({
                     id: req.params.id,
                     payload,
                 });
+
+                if (!data) return res.status(404).send();
 
                 return data;
             },

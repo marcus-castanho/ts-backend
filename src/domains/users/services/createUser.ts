@@ -2,6 +2,7 @@ import { db, usersTable } from '@/infra/db';
 import { User, userSchema } from '../entity';
 import { handleDBError } from '@/infra/db/error';
 import { validateSchema } from '@/infra/db/validations/validateSchema';
+import { SCHEMA_NAME } from '../consts';
 
 type CreateUserArgs = {
     payload: Omit<User, 'id' | 'createdAt' | 'updatedAt'>;
@@ -14,7 +15,7 @@ export async function createUser({ payload }: CreateUserArgs) {
         .catch((error) => ({ error }));
 
     if ('error' in result) throw handleDBError(result.error);
-    const parsedUser = await validateSchema('User', result[0], userSchema);
+    const parsedUser = await validateSchema(SCHEMA_NAME, result[0], userSchema);
 
     return parsedUser;
 }

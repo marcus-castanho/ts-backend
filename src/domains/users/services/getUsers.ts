@@ -4,6 +4,7 @@ import { userSchema } from '../entity';
 import z from 'zod';
 import { handleDBError } from '@/infra/db/error';
 import { validateSchema } from '@/infra/db/validations/validateSchema';
+import { SCHEMA_NAME } from '../consts';
 
 type GetUsersArgs = {
     filter: { name?: string; email?: string };
@@ -31,7 +32,7 @@ export async function getUsers({ filter, pagination }: GetUsersArgs) {
 
     if ('error' in result) throw handleDBError(result.error);
     const { users } = await validateSchema(
-        'User',
+        SCHEMA_NAME,
         { users: result },
         z.object({ users: z.array(userSchema) }),
     );

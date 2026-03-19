@@ -22,6 +22,8 @@ export async function update({ id, payload }: UpdateArgs) {
         .catch((error) => ({ error }));
 
     if ('error' in result) throw handleDBError(result.error);
+
+    if (result.length === 0) return null;
     const parsedRecord = await validateSchema(
         SCHEMA_NAME,
         result[0],

@@ -18,12 +18,13 @@ export async function remove({ id }: RemoveArgs) {
         .catch((error) => ({ error }));
 
     if ('error' in result) throw handleDBError(result.error);
+
+    if (result.length === 0) return null;
     const parsedRecord = await validateSchema(
         SCHEMA_NAME,
         result[0],
         product_1Schema,
     );
-    if (result.length === 0) return null;
 
     const key = `${KEYSPACE['query:products_1:user']}:${parsedRecord.userId}`;
     const cached = await client.json.get(key);

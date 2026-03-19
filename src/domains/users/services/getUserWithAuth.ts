@@ -6,6 +6,7 @@ import { authSchema } from '@/domains/auth';
 import z from 'zod';
 import { handleDBError } from '@/infra/db/error';
 import { validateSchema } from '@/infra/db/validations/validateSchema';
+import { SCHEMA_NAME } from '../consts';
 
 type GetUserWithAuthArgs = { identifier: { id: number } | { email: string } };
 export async function getUserWithAuth({ identifier }: GetUserWithAuthArgs) {
@@ -31,7 +32,7 @@ export async function getUserWithAuth({ identifier }: GetUserWithAuthArgs) {
     if (!record) return null;
 
     const parsedResult = await validateSchema(
-        'User',
+        SCHEMA_NAME,
         record,
         z.object({ users: userSchema, auth: authSchema.nullable() }),
     );
