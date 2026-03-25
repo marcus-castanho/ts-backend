@@ -2,6 +2,7 @@ import { protectRoute, verifyPermission } from '@/domains/auth/guard';
 import { InstanceHandler } from '../types';
 import {
     getCachedAllUserProducts,
+    getCachedHttp,
     getCachedUsers,
 } from '@/controllers/examples';
 
@@ -10,6 +11,13 @@ const PREFIX = '/examples';
 export const setupExamplesRoutes: InstanceHandler = (instance) => {
     instance.register(
         (instanceWithPrefix) => {
+            /**
+             * DOCS - CACHING: req with browser HTTP caching
+             * - The returned value is dynamically based on the current timestamp and cached for 60 seconds
+             * - To test it, access the route on the browser and then access the same route on different tabs to see the persisted value
+             */
+            instanceWithPrefix.register(getCachedHttp('/cached/http'));
+
             instanceWithPrefix.register((instanceWitAuthPermission) => {
                 instanceWitAuthPermission.addHook('onRequest', protectRoute);
                 instanceWitAuthPermission.addHook(
