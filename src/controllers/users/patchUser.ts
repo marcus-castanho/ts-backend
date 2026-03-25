@@ -24,12 +24,13 @@ export const patchUser: Controller = (route) => {
                     security: [{ [DOCS.authType]: [] }],
                 },
             },
-            async (req) => {
+            async (req, res) => {
                 const { password, ...payload } = req.body;
                 const user = await userServices.updateUser({
                     id: req.params.id,
                     payload,
                 });
+                if (!user) return res.status(404).send();
 
                 if (password) {
                     await authServices.updatedAuthCredentials({

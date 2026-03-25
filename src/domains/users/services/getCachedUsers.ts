@@ -3,7 +3,7 @@ import z from 'zod';
 import { client } from '@/infra/cache/client';
 import { getUsers } from './getUsers';
 import { KEYSPACE } from '@/infra/cache/consts';
-import { generateJitterTTL } from '@/infra/cache/utils/generateJitterTtl';
+import { generateJitterTTL } from '@/infra/cache/utils/generateJitterTTL';
 
 const BASE_CACHE_TIME = 60;
 

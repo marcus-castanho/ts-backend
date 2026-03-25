@@ -1,6 +1,6 @@
 import { db } from '@/infra/db';
 import { log } from '@/infra/logger';
-import { catchError } from '@/infra/db/error';
+import { handleDBError } from '@/infra/db/error';
 import { authBlacklistTable } from '@/infra/db/schema/authBlacklist';
 import { AuthBlackListRecord, authBlacklistRecordSchema } from '../entity';
 
@@ -14,7 +14,7 @@ export async function create({ payload }: Create) {
         .returning()
         .catch((error) => ({ error }));
 
-    if ('error' in result) return catchError(result.error);
+    if ('error' in result) return handleDBError(result.error);
 
     const parsed = authBlacklistRecordSchema.safeParse(result[0]);
     if (parsed.error) {
