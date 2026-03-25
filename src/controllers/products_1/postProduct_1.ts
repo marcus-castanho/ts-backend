@@ -17,7 +17,7 @@ export const postProduct_1: Controller = (route) => {
                 schema: { ...dto, tags: [DOCS.tags.products_1] },
             },
             async (req) => {
-                const data = await products_1Services.create({
+                const data = await products_1Services.createWriteThrough({
                     payload: { ...req.body, ...req.params },
                 });
 

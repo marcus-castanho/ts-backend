@@ -23,7 +23,7 @@ export const patchProduct_1: Controller = (route) => {
             },
             async (req, res) => {
                 const { ...payload } = req.body;
-                const data = await products_1Services.update({
+                const data = await products_1Services.updateWriteThrough({
                     id: req.params.id,
                     payload,
                 });

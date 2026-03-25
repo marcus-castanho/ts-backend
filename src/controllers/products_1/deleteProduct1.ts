@@ -20,7 +20,7 @@ export const deleteProduct_1: Controller = (route) => {
                 },
             },
             async (req, res) => {
-                const data = await products_1Services.remove({
+                const data = await products_1Services.removeWriteThrough({
                     id: req.params.id,
                 });
 
