@@ -1,0 +1,6 @@
+services:
+    ts-backend-1:
+        # Make sure to build the project image upfront
+        image: ts-backend
+        env_file:
+            - .env
