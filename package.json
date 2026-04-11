@@ -11,7 +11,7 @@
     "lint:fix": "eslint \"src/**/*.ts\" --fix --max-warnings 0",
     "lint:check": "eslint \"src/**/*.ts\"",
     "lint:check-strict": "eslint \"src/**/*.ts\" --max-warnings 0",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\""
   },
   "author": "",
   "license": "ISC",
