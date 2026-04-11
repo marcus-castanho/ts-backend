@@ -9,7 +9,8 @@
     "start": "NODE_ENV=production node -r dotenv/config dist/main",
     "dev": "nodemon src/main.ts",
     "lint:fix": "eslint \"src/**/*.ts\" --fix --max-warnings 0",
-    "lint:check": "eslint \"src/**/*.ts\" --max-warnings 0",
+    "lint:check": "eslint \"src/**/*.ts\"",
+    "lint:check-strict": "eslint \"src/**/*.ts\" --max-warnings 0",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
