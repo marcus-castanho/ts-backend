@@ -48,20 +48,15 @@ jobs:
                   echo "name=$NAME" >> $GITHUB_OUTPUT
                   echo "email=$EMAIL" >> $GITHUB_OUTPUT
 
-
             - name: Create and push new tag
               run: |
                   NEW_TAG="v${{ steps.bump.outputs.new_version }}"
 
-                  echo "${{ steps.set_user.outputs.name }}"
-                  echo "${{ steps.set_user.outputs.email }}"
-                  echo "${NEW_TAG}"
+                  git config user.name "${{ steps.set_user.outputs.name }}"
+                  git config user.email "${{ steps.set_user.outputs.email }}"
 
-                #   git config user.name "${{ steps.set_user.outputs.name }}"
-                #   git config user.email "${{ steps.set_user.outputs.email }}"
-
-                #   git tag $NEW_TAG
-                #   git push origin $NEW_TAG
+                  git tag $NEW_TAG
+                  git push origin $NEW_TAG
 
     deploy:
         runs-on: ubuntu-latest
