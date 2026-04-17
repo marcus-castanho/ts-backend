@@ -38,6 +38,7 @@ jobs:
                   echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
             - name: Set git user
+              id: set_user
               run: |
                   NAME="${{ github.event.pull_request.merged_by.login }}"
                   EMAIL="${{ github.event.pull_request.merged_by.login }}@users.noreply.github.com"
@@ -53,12 +54,12 @@ jobs:
               run: |
                   NEW_TAG="v${{ steps.bump.outputs.new_version }}"
 
-                  echo "${{ steps.author.outputs.name }}"
-                  echo "${{ steps.author.outputs.email }}"
+                  echo "${{ steps.set_user.outputs.name }}"
+                  echo "${{ steps.set_user.outputs.email }}"
                   echo "${NEW_TAG}"
 
-                  #   git config user.name "${{ steps.author.outputs.name }}"
-                  #   git config user.email "${{ steps.author.outputs.email }}"
+                  #   git config user.name "${{ steps.set_user.outputs.name }}"
+                  #   git config user.email "${{ steps.set_user.outputs.email }}"
 
                   #   git tag $NEW_TAG
                   #   git push origin $NEW_TAG
