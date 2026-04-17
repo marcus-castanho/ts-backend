@@ -13,7 +13,7 @@ jobs:
         steps:
           - name: Checkout repository
             uses: actions/checkout@v6
-                with:
+            with:
                 fetch-depth: 0
 
           - name: Get latest tag
@@ -62,5 +62,5 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
-            - name: push to host
-                run: echo "Mocked deployed"
+          - name: push to host
+            run: echo "Mocked deployed"
