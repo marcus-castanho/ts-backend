@@ -39,11 +39,11 @@ jobs:
 
             - name: Set git user
                 run: |
-                NAME="${{ github.event.pull_request.merged_by.login }}"
-                EMAIL="${{ github.event.pull_request.merged_by.login }}@users.noreply.github.com"
+                    NAME="${{ github.event.pull_request.merged_by.login }}"
+                    EMAIL="${{ github.event.pull_request.merged_by.login }}@users.noreply.github.com"
 
-                git config user.name "$NAME"
-                git config user.email "$EMAIL"
+                    git config user.name "$NAME"
+                    git config user.email "$EMAIL"
 
             - name: Create and push new tag
               run: |
