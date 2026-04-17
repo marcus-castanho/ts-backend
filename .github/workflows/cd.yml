@@ -51,7 +51,7 @@ jobs:
 
                 echo "${{ steps.author.outputs.name }}"
                 echo "${{ steps.author.outputs.email }}"
-                echo "${$NEW_TAG}"
+                echo "${NEW_TAG}"
 
                 #   git config user.name "${{ steps.author.outputs.name }}"
                 #   git config user.email "${{ steps.author.outputs.email }}"
