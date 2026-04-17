@@ -1,0 +1,57 @@
+name: CD
+
+on:
+    pull_request:
+        branches:
+        - main
+
+jobs:
+    tag:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository (with full history + tags)
+              uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+
+            - name: Get latest tag
+              id: get_tag
+              run: |
+                  TAG=$(git describe --tags --abbrev=0 || echo "v0.0.0")
+                  echo "latest_tag=$TAG" >> $GITHUB_OUTPUT
+
+            - name: Bump minor version
+              id: bump
+              run: |
+                  TAG="${{ steps.get_tag.outputs.latest_tag }}"
+                  VERSION="${TAG#v}"
+
+                  IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+
+                  MINOR=$((MINOR + 1))
+                  PATCH=0
+
+                  NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+                  echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+            - name: Set git user
+                run: |
+                NAME="${{ github.event.pull_request.merged_by.login }}"
+                EMAIL="${{ github.event.pull_request.merged_by.login }}@users.noreply.github.com"
+
+                git config user.name "$NAME"
+                git config user.email "$EMAIL"
+
+            - name: Create and push new tag
+              run: |
+                  NEW_TAG="v${{ steps.bump.outputs.new_version }}"
+
+                  echo "${{ steps.author.outputs.name }}"
+                  echo "${{ steps.author.outputs.email }}"
+                  echo "${$NEW_TAG}"
+
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: push to host
+              run: echo "Mocked deployed"

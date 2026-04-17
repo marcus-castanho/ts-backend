@@ -1,9 +1,13 @@
 name: CI
+
 on:
     pull_request:
-        branches: [main]
+        branches:
+            - main
+
 env:
-    NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+    NODE_VERSION: 24
+
 jobs:
     lint:
         runs-on: ubuntu-latest
@@ -14,7 +18,7 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v3
               with:
-                  node-version: 24
+                  node-version: ${{ env.NODE_VERSION }}
                   cache: 'npm'
 
             - name: Install dependencies
@@ -35,7 +39,7 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v3
               with:
-                  node-version: 24
+                  node-version: ${{ env.NODE_VERSION }}
                   cache: 'npm'
 
             - name: Install dependencies
