@@ -19,23 +19,23 @@ jobs:
             - name: Get latest tag
               id: get_tag
               run: |
-                  TAG=$(git describe --tags --abbrev=0 || echo "v0.0.0")
-                #   check "$GITHUB_OUTPUT"
-                  echo "latest_tag=$TAG" >> $GITHUB_OUTPUT
+                    TAG=$(git describe --tags --abbrev=0 || echo "v0.0.0")
+                    #   check "$GITHUB_OUTPUT"
+                    echo "latest_tag=$TAG" >> $GITHUB_OUTPUT
 
             - name: Bump minor version
               id: bump
               run: |
-                  TAG="${{ steps.get_tag.outputs.latest_tag }}"
-                  VERSION="${TAG#v}"
+                    TAG="${{ steps.get_tag.outputs.latest_tag }}"
+                    VERSION="${TAG#v}"
 
-                  IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+                    IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
 
-                  MINOR=$((MINOR + 1))
-                  PATCH=0
+                    MINOR=$((MINOR + 1))
+                    PATCH=0
 
-                  NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
-                  echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+                    NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+                    echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
             - name: Set git user
                 run: |
@@ -47,20 +47,20 @@ jobs:
 
             - name: Create and push new tag
               run: |
-                  NEW_TAG="v${{ steps.bump.outputs.new_version }}"
+                    NEW_TAG="v${{ steps.bump.outputs.new_version }}"
 
-                  echo "${{ steps.author.outputs.name }}"
-                  echo "${{ steps.author.outputs.email }}"
-                  echo "${$NEW_TAG}"
+                    echo "${{ steps.author.outputs.name }}"
+                    echo "${{ steps.author.outputs.email }}"
+                    echo "${$NEW_TAG}"
 
-                #   git config user.name "${{ steps.author.outputs.name }}"
-                #   git config user.email "${{ steps.author.outputs.email }}"
+                    #   git config user.name "${{ steps.author.outputs.name }}"
+                    #   git config user.email "${{ steps.author.outputs.email }}"
 
-                #   git tag $NEW_TAG
-                #   git push origin $NEW_TAG
+                    #   git tag $NEW_TAG
+                    #   git push origin $NEW_TAG
 
     deploy:
         runs-on: ubuntu-latest
         steps:
             - name: push to host
-              run: echo "Mocked deployed"
+                run: echo "Mocked deployed"
