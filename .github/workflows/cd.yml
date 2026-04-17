@@ -45,6 +45,10 @@ jobs:
                   git config user.name "$NAME"
                   git config user.email "$EMAIL"
 
+                  echo "name=$NAME" >> $GITHUB_OUTPUT
+                  echo "email=$EMAIL" >> $GITHUB_OUTPUT
+
+
             - name: Create and push new tag
               run: |
                   NEW_TAG="v${{ steps.bump.outputs.new_version }}"
