@@ -11,7 +11,7 @@ import {
 const PREFIX = '/products_1';
 
 /**
- * DOCS: All products_1 routes are accessed by /user/:userId/products_1. There are currently no way to access products without a corresponding user
+ * DOCS - All products_1 routes are accessed by /user/:userId/products_1. There are currently no way to access products without a corresponding user
  */
 export const setupProducts_1Routes: InstanceHandler = (instance) => {
     instance.register(
